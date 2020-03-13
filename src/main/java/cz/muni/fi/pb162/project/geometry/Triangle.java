@@ -7,7 +7,7 @@ public class Triangle {
     private static final double MAXDEV =0.001;
     private final Vertex2D[] vertexex = new Vertex2D[3];
     private final Triangle[] subTriangle = new Triangle[3];
-    private final boolean divided[] = new boolean[1];
+    private final boolean[] divided = new boolean[1];
     /**
      * @param a first vertex
      * @param b first vertex
