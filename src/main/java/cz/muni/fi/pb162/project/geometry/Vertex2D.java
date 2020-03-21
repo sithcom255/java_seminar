@@ -8,8 +8,8 @@ package cz.muni.fi.pb162.project.geometry;
 
 public class Vertex2D {
 
-    private double x=0;
-    private double y=0;
+    private final double x;
+    private final double y;
 
     /**
      * @param x in first
@@ -24,18 +24,12 @@ public class Vertex2D {
         return x;
     }
 
-    public void setX(double x) {
-        this.x = x;
-    }
 
     public double getY() {
         return y;
     }
 
-    public void setY(double y) {
-        this.y = y;
-    }
-    /**
+       /**
     *@return returns string of characters based on X and Y, such x=2.0, y=3.0 => [2.0, 3.0]
      */
     @Override
@@ -50,4 +44,17 @@ public class Vertex2D {
         return new Vertex2D((this.getX()+otherVertex.getX())/2,(this.getY()+otherVertex.getY())/2);
     }
 
+    /**
+     * @param vertex another point
+     * @return distance between the two
+     */
+
+    public double distance(Vertex2D vertex){
+        if( vertex !=null) {
+            double distance = Math.sqrt(Math.pow(vertex.x - this.x, 2) + Math.pow(vertex.y - this.y, 2));
+            return distance;
+        } else{
+            return -1.0;
+        }
+    }
 }
