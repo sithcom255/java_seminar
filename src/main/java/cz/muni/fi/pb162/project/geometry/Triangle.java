@@ -1,10 +1,6 @@
 package cz.muni.fi.pb162.project.geometry;
 import cz.muni.fi.pb162.project.utils.SimpleMath;
 
-import java.util.Arrays;
-import java.util.OptionalDouble;
-
-
 /**
  * @author Jan Gavlík x445794@mail.muni.cz
  */
@@ -55,7 +51,8 @@ public class Triangle implements Measurable{
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Triangle: vertices=" + vertexex[0].toString() + " " + vertexex[1].toString() + " " + vertexex[2].toString());
+        sb.append("Triangle: vertices=" + vertexex[0].toString() +
+                " " + vertexex[1].toString() + " " + vertexex[2].toString());
         return (sb.toString());
     }
 
@@ -127,16 +124,24 @@ public class Triangle implements Measurable{
         double sideA = vertexex[0].distance(vertexex[1]);
         double sideB = vertexex[1].distance(vertexex[2]);
         double sideC = vertexex[2].distance(vertexex[0]);
-        return (Math.abs(sideA - sideB) < MAXDEV && Math.abs(sideA - sideC) < MAXDEV && Math.abs(sideB - sideC) < MAXDEV);
+        return (Math.abs(sideA - sideB) < MAXDEV &&
+                Math.abs(sideA - sideC) < MAXDEV && Math.abs(sideB - sideC) < MAXDEV);
     }
-
+    /**
+     * @return width
+     */
     @Override
     public double getWidth() {
         return Math.abs(SimpleMath.maxX(this)-SimpleMath.minX(this));
     }
 
+    /**
+     * @return height
+     */
+
     @Override
     public double getHeight() {
+
         return Math.abs(SimpleMath.maxY(this)-SimpleMath.minY(this));
     }
 }
