@@ -16,8 +16,14 @@ public class Snowman {
      * @param factor size difference for next circles
      */
     public Snowman(Circular circle, double factor) {
+        double checkedfactor;
+        if(factor<=0 || factor>1){
+            checkedfactor=0.8;
+        } else {
+            checkedfactor=factor;
+        }
         this.balls[0] = circle;
-        ballMaker(circle, factor);
+        ballMaker(circle, checkedfactor);
     }
     /**
      * @param circle takes initial circle
@@ -38,8 +44,8 @@ public class Snowman {
         return balls;
     }
     /**
-     * @param circle takes initial circle
-     * @param factor size difference for next circles
+     * @param circle
+     * @param factor
      * @return vertex of next circle
      * */
 
