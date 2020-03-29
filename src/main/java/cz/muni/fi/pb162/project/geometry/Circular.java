@@ -12,7 +12,6 @@ public interface Circular {
      *
      * @return the middle point.
      */
-
     Vertex2D getCenter();
 
     /**
@@ -21,7 +20,5 @@ public interface Circular {
      * @return circle's radius
      */
     double getRadius();
-
-
 
 }
