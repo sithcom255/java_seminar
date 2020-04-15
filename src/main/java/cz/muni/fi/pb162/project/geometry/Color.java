@@ -13,15 +13,6 @@ public enum Color {
      */
     @Override
     public String toString(){
-        switch(this) {
-            case RED: return "red";
-            case GREEN: return "green";
-            case BLUE: return "blue";
-            case WHITE: return "white";
-            case BLACK: return "black";
-            case YELLOW: return "yellow";
-            case ORANGE: return "orange";
-            default: throw new IllegalArgumentException();
-        }
+        return super.toString().toLowerCase();
     }
 }

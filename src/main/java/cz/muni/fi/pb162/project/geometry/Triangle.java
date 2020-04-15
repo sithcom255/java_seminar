@@ -1,14 +1,13 @@
 package cz.muni.fi.pb162.project.geometry;
-import cz.muni.fi.pb162.project.utils.SimpleMath;
+
 
 /**
  * @author Jan Gavlík x445794@mail.muni.cz
  */
-public class Triangle implements Measurable{
+public class Triangle extends ArrayPolygon implements Measurable {
     private static final double MAXDEV = 0.001;
-    private final Vertex2D[] vertexex = new Vertex2D[3];
     private final Triangle[] subTriangle = new Triangle[3];
-    private final boolean[] divided = new boolean[1];
+
 
     /**
      * @param a first vertex
@@ -17,9 +16,7 @@ public class Triangle implements Measurable{
      */
 
     public Triangle(Vertex2D a, Vertex2D b, Vertex2D c) {
-        this.vertexex[0] = a;
-        this.vertexex[1] = b;
-        this.vertexex[2] = c;
+        super(new Vertex2D[]{a, b, c});
     }
 
     /**
@@ -34,25 +31,13 @@ public class Triangle implements Measurable{
     }
 
     /**
-     * @param index index of the vertex you need
-     * @return your vertex
-     */
-    public Vertex2D getVertex(int index) {
-        if (isInRange(index)) {
-            return vertexex[index];
-        } else {
-            return null;
-        }
-    }
-
-    /**
      * @return returns string representatio
      */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Triangle: vertices=" + vertexex[0].toString() +
-                " " + vertexex[1].toString() + " " + vertexex[2].toString());
+        sb.append("Triangle: vertices=" + getVertex(0).toString() +
+                " " + getVertex(1).toString() + " " + getVertex(2).toString());
         return (sb.toString());
     }
 
@@ -61,13 +46,13 @@ public class Triangle implements Measurable{
      */
     public boolean divide() {
         if (!isDivided()) {
-            Vertex2D ab = vertexex[0].createMiddle(vertexex[1]);
-            Vertex2D bc = vertexex[1].createMiddle(vertexex[2]);
-            Vertex2D ac = vertexex[0].createMiddle(vertexex[2]);
-            subTriangle[0] = new Triangle(vertexex[0], ab, ac);
-            subTriangle[1] = new Triangle(ab, vertexex[1], bc);
-            subTriangle[2] = new Triangle(ac, bc, vertexex[2]);
-            divided[0] = true;
+            Vertex2D ab = getVertex(0).createMiddle(getVertex(1));
+            Vertex2D bc = getVertex(1).createMiddle(getVertex(2));
+            Vertex2D ac = getVertex(0).createMiddle(getVertex(2));
+            subTriangle[0] = new Triangle(getVertex(0), ab, ac);
+            subTriangle[1] = new Triangle(ab, getVertex(1), bc);
+            subTriangle[2] = new Triangle(ac, bc, getVertex(2));
+
             return true;
 
         } else {
@@ -94,7 +79,7 @@ public class Triangle implements Measurable{
      * @return tells you if already sucessfully divided
      */
     public boolean isDivided() {
-        return (divided[0]);
+        return !(subTriangle[0]==null);
     }
 
     /**
@@ -121,27 +106,11 @@ public class Triangle implements Measurable{
      * @return if sides are as long the others
      */
     public boolean isEquilateral() {
-        double sideA = vertexex[0].distance(vertexex[1]);
-        double sideB = vertexex[1].distance(vertexex[2]);
-        double sideC = vertexex[2].distance(vertexex[0]);
+        double sideA = getVertex(0).distance(getVertex(1));
+        double sideB = getVertex(1).distance(getVertex(2));
+        double sideC = getVertex(2).distance(getVertex(0));
         return (Math.abs(sideA - sideB) < MAXDEV &&
                 Math.abs(sideA - sideC) < MAXDEV && Math.abs(sideB - sideC) < MAXDEV);
     }
-    /**
-     * @return width
-     */
-    @Override
-    public double getWidth() {
-        return Math.abs(SimpleMath.maxX(this)-SimpleMath.minX(this));
-    }
 
-    /**
-     * @return height
-     */
-
-    @Override
-    public double getHeight() {
-
-        return Math.abs(SimpleMath.maxY(this)-SimpleMath.minY(this));
-    }
 }
