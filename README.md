@@ -1,75 +1,86 @@
-## Šestá iterace
+## Sedmá iterace
 
-Cvičení zaměřené na práci s polem, rovností, abstraktní třídou a dědičností.
+Cvičení zaměřené na práci s kolekcemi.
 
-V předchozích iteracích jsme pracovali s pravidelnými n-úhelníky. Nyní si systém rozšíříme o obecnější tzv. jednoduché n-úhelníky.
-To jsou obecné nepravidelné uzavřené n-úhelníky bez vzájemně se protínajících hran, jak ukazují následující příklady:
+1.  Vytvořte třídu `CollectionPolygon` rozšiřující třídu `SimplePolygon`, která bude podobná třídě `ArrayPolygon`.
+    Lišit se bude pouze tím, že vrcholy n-úhelníku nebudou uloženy v poli, ale ve vhodné kolekci.
+	*   Vytvořte konstruktor, který jako vstupní parametr bude brát **pole** vrcholů 
+	    (podobně jako tomu bylo u třídy `ArrayPolygon`). Vrcholy si ale uloží do vhodné kolekce.
+    *   Stejně jako minule chceme zabránit tomu, aby vnikl polygon, který by neobsahoval žádný vrchol. 
+	    Proto konstruktor zkontroluje, jestli není vstupní pole prázdné (null, prázdné, nebo samými null prvky).
+		Pokud je prázdné, vyhodí opět konstruktor výjimku `IllegalArgumentException` s popisem.
+    *   Definujte metody rovnosti.
+        Dva polygony jsou stejné, pokud jsou všechny indexy vrcholů stejné,
+        tj. mají stejné souřadnice vrcholů se stejným pořadím.
+    *   Do třídy přidejte metodu `CollectionPolygon withoutLeftmostVertices()`,
+        která vrátí nový polygon bez nejlevějších vrcholů (může jich být víc, viz např. obdélník).
+        Původní polygon zůstane nezměněn. Pokud by nový polygon po odebrání nejlevějších vrcholů již žádné vrcholy 
+		neobsahoval, metoda vrátí `null`.
+		Pozn.: Tato metoda slouží k procvičení práce s kolekcemi. Žádný jiný smysl v ní nehledejte.
+		
+2.  Všimněte si, že konstruktory tříd `ArrayPolygon` a `CollectionPolygon` jsou si velmi podobné. 
+    Oba kontrolují správnost vstupního pole. Liší se jen v uložení vrcholů.
+	*   Ve společné nadtřídě `SimplePolygon` vytvoře konstruktor a přesuňte do něj společný kód.
+	    Konstruktor `SimplePolygon` tedy zkontroluje správnost vstupního pole. V případě chyby
+		vyhodí výjimku a tím celý proces vytváření polygonu skončí. Pokud je vše OK, předá se normálně řízení
+		konstruktoru podtřídy. Konstruktory podtříd budou naopak volat konstruktor `SimplePolygon` a 
+		poté si uloží vrcholy do pole respektive kolekce. 
+		Pokud konstruktor `SimplePolygon` selže s výjimkou, selže automaticky i konstruktor podtřídy. 
+		Nemusíte to tedy v podtřídách nijak ošetřovat. Podrobněji si práci s výjimkami procvičíme příště.
+    *   Ve třídě `CollectionPolygon` vytvořte i druhý konstruktor, který bude brát jako parametr *seznam* vrcholů.
+	    Opět se musí zkontrolovat, že máme alespoň jeden vrchol, takže i tento konstruktor bude volat 
+		konstruktor nadtřídy vytvořený v předchozím bodě.
 
-![příklady nepravidelných n-úhelníků](images/06a.png)
+3. Vytvořte třídu `ColoredPolygon`, který vezme libovolný existující polygon a přidá mu novou vlastnost: barvu.
+    *   Konstruktor bere polygon typu `Polygon` a barvu typu `Color`.
+    *   Třída obsahuje gettery na dané atributy `getPolygon` a `getColor`.
+    *   Dva barevné polygony jsou stejné, jestli obsahují (logicky) stejný polygon i barvu.
 
-Přestože pravidelný n-úhelník je speciální případ jednoduchého n-úhelníka, v našem případě budou hierarchie tříd
-_pravidelné n-úhelníky_ a _jednoduché n-úhelníky_ oddělené. Je to z toho důvodu, že pravidelné n-úhelníky máme definovány pomocí
-poloměru opsané kružnice a počtu hran, zatímco jednoduché n-úhelníky musí být z principu definovány pomocí seznamu souřadnic
-jednotlivých vrcholů.
+4.  Vytvořte třídu `Paper` implementující rozhraní `Drawable`.
+    Tato třída simuluje papír, na který se dají kreslit barevné polygony. Simuluje ho v tom, že přímo
+	nic nevykresluje, ale polygony, které se mají vykreslit, ukládá spolu s barvou do kolekce jako objekty `ColoredPolygon`.
+	
+    Když na papír nakreslíme stejný polygon (se stejnou barvou) dvakrát, uloží se jenom jednou.
+    Na papír se kreslí barvou a každý polygon je pro jednoduchost jednobarevný.
+    Implicitní barva je černá.
+	
+    *   První konstruktor bude bez parametrů.
+    *   Další konstruktor bude brát parametr typu `Drawable` a kolekci nakreslených polygonů si zkopíruje.
+    *   `changeColor(color)` změní barvu, jakou se budou následující polygony kreslit (s jakou barvou se budou ukládat)
+	    Defaultní barva u nové instance papíru je černá. 
+    *   `drawPolygon(polygon)` "namaluje" (tj. uloží) polygon na papír barvou nastavenou v předchozí metodě. 
+	    Pokud by už takový polygon (stejné barvy a tvaru) na papíře (v kolekci) byl, tak se ignoruje.
+	    Pokud je nastavená bílá barva polygon se nekreslí (neuloží), protože na bílém papíře by stejně nebyl vidět.
+    *   `erasePolygon(polygon)` odstraní polygon z papíru (odebere z kolekce).
+    *   `eraseAll()` odstraní všechny polygony z papíru.
+    *   `getAllDrawnPolygons()` vrátí všechny barevné polygony.
+    *   `uniqueVerticesAmount()` vrátí počet vrcholů na papíře bez duplicit.
+    *   Více informací najdete v javadocu třídy `Drawable`.
 
-1.  Definujte rovnost dvou vrcholů (`Vertex2D`) tak, že dva vrcholy jsou stejné, pokud mají stejné souřadnice.
-
-    >   Nezapomeňte, že předefinováním rovnosti máte povinnost předefinovat ještě jednu metodu.
-
-2. Metody v `SimpleMath` upravte tak, aby brali jako parametr rozhraní `Polygon`.
-   Rozhraní `Polygon` definuje metody obecného n-úhelníka.
-
-3.  V balíku `geometry` vytvořte *abstraktní* třídu `SimplePolygon` implementující rozhraní `Polygon`.
-    Třída `SimplePolygon` bude obecná v tom smyslu, že nebude předjímat způsob uložení jednotlivých vrcholů (polem, kolekcí apod.).
-    To nechá až na podtřídy. Bude tedy implementovat pouze následující metody, ostatní zůstanou neimplementované:
-    *   Metoda `getHeight()` vrátí rozdíl mezi největší a nejmenší souřadnicí Y v n-úhelníku.
-        Podobně `getWidth()` pro X-ové souřadnice.
-    *   Metoda `toString()` vrátí řetězec:
-
-            "Polygon: vertices = [x, y] [x, y] [x, y]"
-
-        kde [x, y] jsou postupně všechny souřadnice vrcholů.
-
-4.  Vytvořte neměnnou třídu `ArrayPolygon` rozšiřující třídu `SimplePolygon`.
-    *   Souřadnice vrcholů n-úhelníka budou uloženy ve formě pole.
-    *   Konstruktor bude mít jako vstupní argument pole vrcholů.
-        * Na začátku se ověří, jestli není pole, nebo některý jeho prvek `null`.
-          Pokud není vstupní pole validní, vyhodí výjimku `IllegalArgumentException` s vhodnou zprávou.
-        * Konstruktor si vstupní pole zkopíruje (nestačí tedy pouze uložit ukazatel na pole do atributu,
-          pak by šlo vytvořený objekt modifikovat, co nechceme).
-    *   Metoda `Vertex2D getVertex(int i)` vrátí i-tý vrchol modulo počet vrcholů.
-        V případě záporného vstupního argumentu vyhodí výjimku `IllegalArgumentException` **s popisem chyby**.
-    *   Definujte metody rovnosti. Dva `ArrayPolygony` jsou stejné, pokud jsou všechny indexy vrcholů stejné.
-		Pro porovnání tříd použijte `getClass()`, nikoliv `instanceof`. Důvod viz přednáška.
-
-        **Př.** *Následující trojúhelníky **nejsou** stejné*:
-        *   [1, 1] [2, 2] [3, 3]
-        *   [3, 3] [1, 1] [2, 2]
-
-5.  Upravte třídu `Triangle` tak, aby rozšiřovala třídu `ArrayPolygon`:
-    *   Konstruktor zůstane v původní podobě, tj. bude brát tři konkrétní vrcholy jako svoje vstupní argumenty
-        a předá je konstruktoru nadtřídy v podobě pole vrcholů.
-    *   Zrušte všechny atributy a metody, které lze zdědit beze změny, kromě metody `toString()`.
-
-6. Pokud jste implementaci provedli bez chyb, tak po spuštění třídy `Draw` se na obrazovce vykreslí [fialový trojúhelník
-   a uvnitř něj fialový polygon](https://gitlab.fi.muni.cz/pb162/pb162-course-info/wikis/draw-images)
-   (v jeho tvaru nehledejte žádný smysl :wink: ).
+5. Spuštění třídy `Draw`
+[vykreslí barevný domeček](https://gitlab.fi.muni.cz/pb162/pb162-course-info/wikis/draw-images).
 
 ### Hinty
 
-- Nezapomeňte v `SimpleMath` upravit i Javadoc.
-- Pro implementaci `SimplePolygon` využijte metod ze `SimpleMath`.
-- **V abstraktní třídě explicitně napište hlavičky abstraktních metod.**
-- Využijte metody z utility třídy `Arrays`, např. _copyOf_ nebo _equals_.
-- Při kopírovaní pole stačí plytká kopie, protože objekty typu `Vertex2D` jsou neměnitelné.
-- Znak modulo je v Javě reprezentován `%`.
-- Privátní atribut = viditelný v rámci stejné třídy; nemusí to být pouze objekt `this`.
-- Pro výčet prvků pole použijte následující syntax: `new Vertex2D[] { /* elements */ }`.
-- Ve třídě `Triangle` pamatujte na kontrakt metody `equals`: metoda musí být symetrická,
-  tj. `new ArrayPolygon(...).equals(Triangle(...))` musí vrátit stejný výsledek jako
-  `Triangle(...).equals(new ArrayPolygon(...))`.
-  I kdyby byly body trojúhelníku i polygonu stejné, `equals` vrací `false`, protože jde o různé třídy.
+- Při výběru mezi seznamem a množinou v `CollectionPolygon` myslete na to, že topologie n-úhelníku je dána pořadím
+  vrcholů a že je povoleno mít více vrcholů se stejnými souřadnicemi
+  (u jednoduchého n-úhelníku se sice nesmí křížit hrany, mohou se ale dotýkat).
+- Proměnné by měly být typu rozhraní, tj. `List` namísto `ArrayList`, `Set` namísto `HashSet`.
+- Abstraktní třída `SimplePolygon` může mít konstruktor, nedá se však přímo instanciovat.
+- Pro konverzi pole na seznam existuje statická metoda `Arrays.asList`.
+- Pro konverzi kolekce na pole existuje metoda `toArray`, která bere jako argument nové pole.
+- Kolekce z Java API mají nadefinovanou rovnost. A mají ji nadefinovanou rozumně. Využijte toho.
+- Getter by neměl modifikovat daný atribut, proto vracejte kolekci jako **nemodifikovatelnou**.
+  Tohle platí obecně, nejenom pro metodu `getAllDrawnPolygons()`!
+  Nemodifikovatelné kolekce vytvoří statické metody `Collections.unmodifiableXXX`.
+  Nemodifikovatelnou kolekci nemusíme vracet pouze v případě, kdy vytváříme kolekci přímo v dané metodě.
+- Metody `List.of` i `Arrays.asList` vrací nemodifikovatelnou kolekci.
+  Pro modifikaci je nutno vytvořit novou kolekci.
+- Pozn.: Třída `ColoredPolygon` představuje mezikrok k tzv. návrhovému vzoru (design pattern) *Decorator*. 
+  Ten přidává nové vlastnosti (zde barvu) k existujícímu objektu tak, že mezi klientský kód (`Paper`) a
+  původní objekt (libovolný `Polygon`) vloží meziobjekt (`ColoredPolygon`). Aby to byl ale skutečný 
+  dekorátor, musela by i třída `ColoredPolygon` implementovat rozhraní `Polygon`.
 
 ### Cílový UML diagram tříd:
 
-![UML diagram tříd](images/06-class-diagram.jpg)
+![UML diagram tříd](images/07-class-diagram.jpg)
