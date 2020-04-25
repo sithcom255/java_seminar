@@ -2,7 +2,7 @@ package cz.muni.fi.pb162.project.geometry;
 
 
 import java.util.Arrays;
-import java.util.Objects;
+
 
 
 /**
@@ -17,18 +17,9 @@ public class ArrayPolygon extends SimplePolygon {
      * @param arr array od V2
      */
     public ArrayPolygon(Vertex2D[] arr) {
-
-
-        if (arr==null){
-            throw new IllegalArgumentException();
-        }
-        boolean existNull = Arrays.stream(arr).anyMatch(Objects::isNull);
-        if (!existNull) {
-            vertexex = Arrays.stream(arr)
-                    .toArray(Vertex2D[]::new);
-        } else {
-            throw new IllegalArgumentException("invalid argument");
-        }
+        super(arr);
+        vertexex = Arrays.stream(arr)
+                .toArray(Vertex2D[]::new);
     }
 
     /**
@@ -61,7 +52,7 @@ public class ArrayPolygon extends SimplePolygon {
             return false;
         } else if (this.getClass().equals(o.getClass())) {
             ArrayPolygon point = (ArrayPolygon) o;
-            boolean vert=true;
+            boolean vert = true;
             for (int i = 0; i < vertexex.length; i++) {
                 if (!(vertexex[i].equals(point.getVertex(i)))) {
                     vert = false;
@@ -75,7 +66,6 @@ public class ArrayPolygon extends SimplePolygon {
     }
 
     /**
-     *
      * @return
      */
     @Override
