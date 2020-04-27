@@ -19,7 +19,6 @@ public class ColoredPolygon {
     }
 
     /**
-     *
      * @return polygon on the obj
      */
     public Polygon getPolygon() {
@@ -27,7 +26,6 @@ public class ColoredPolygon {
     }
 
     /**
-     *
      * @return color of obj
      */
     public Color getColor() {
@@ -35,7 +33,6 @@ public class ColoredPolygon {
     }
 
     /**
-     *
      * @param o polygon
      * @return boolean
      */
@@ -44,19 +41,20 @@ public class ColoredPolygon {
             return false;
         } else if (this.getClass().equals(o.getClass())) {
             ColoredPolygon polygon = (ColoredPolygon) o;
-            boolean result= this.polygon.equals(polygon.getPolygon()) && this.color.equals(polygon.getColor());
+            boolean result = this.polygon.equals(polygon.getPolygon()) && this.color.equals(polygon.getColor());
             return result;
-        } else {
-            return false;
         }
+        return false;
+
 
     }
+
     /**
      * @return hash
      */
     @Override
     public int hashCode() {
-        return (polygon.toString()+color.toString()).hashCode();
+        return (polygon.toString() + color.toString()).hashCode();
     }
 
 }

@@ -25,7 +25,6 @@ public class CollectionPolygon extends SimplePolygon {
     }
 
     /**
-     *
      * @param arr arr
      */
     public CollectionPolygon(List<Vertex2D> arr) {
@@ -37,18 +36,17 @@ public class CollectionPolygon extends SimplePolygon {
     }
 
     /**
-
      * @return smaller thing
      */
     public CollectionPolygon withoutLeftmostVertices() {
-        Vertex2D[] x=new Vertex2D[vertexex.size()];
-                x= vertexex.toArray(x);
-            double max = SimpleMath.minX(new ArrayPolygon(x));
-            CollectionPolygon polygon= new CollectionPolygon((vertexex.stream()
-                    .filter(n -> n.getX() != max)
-                    .collect(Collectors.toList())));
+        Vertex2D[] x = new Vertex2D[vertexex.size()];
+        x = vertexex.toArray(x);
+        double max = SimpleMath.minX(new ArrayPolygon(x));
+        CollectionPolygon polygon = new CollectionPolygon((vertexex.stream()
+                .filter(n -> n.getX() != max)
+                .collect(Collectors.toList())));
 
-        return polygon.getNumVertices()>0 ? polygon :null;
+        return polygon.getNumVertices() > 0 ? polygon : null;
     }
 
     /**
@@ -59,9 +57,9 @@ public class CollectionPolygon extends SimplePolygon {
     public Vertex2D getVertex(int index) {
         if (index < 0) {
             throw new IllegalArgumentException("index negative");
-        } else {
-            return vertexex.get(index % this.getNumVertices());
         }
+        return vertexex.get(index % this.getNumVertices());
+
     }
 
     /**
@@ -88,11 +86,12 @@ public class CollectionPolygon extends SimplePolygon {
                 }
             }
             return vert;
-        } else {
-            return false;
         }
+        return false;
+
 
     }
+
     /**
      * @return
      */
