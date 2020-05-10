@@ -7,7 +7,7 @@ package cz.muni.fi.pb162.project.geometry;
  * @author Jan Gavlík x445794@mail.muni.cz
  */
 
-public class Vertex2D {
+public class Vertex2D implements Comparable<Vertex2D>{
 
     private final double x;
     private final double y;
@@ -84,4 +84,19 @@ public class Vertex2D {
     public int hashCode() {
         return toString().hashCode();
     }
+
+    @Override
+    public int compareTo(Vertex2D vertex2D) {
+        if(this.getX()<vertex2D.getX()){
+            return -1;
+        }else if(this.getX()==vertex2D.getX()){
+            if(this.getY()<vertex2D.getY()){
+                return -1;
+            }else if(this.getY()==vertex2D.getY()){
+                return 0;
+            }
+        }
+    return 1;
+    }
+
 }
