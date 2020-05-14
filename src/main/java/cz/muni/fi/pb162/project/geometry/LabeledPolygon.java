@@ -1,19 +1,31 @@
 package cz.muni.fi.pb162.project.geometry;
 
 
-import java.util.Comparator;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.Collection;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
+
 
 /**
  * @author Jan Gavlík x445794@mail.muni.cz
  */
-public final class LabeledPolygon extends SimplePolygon implements Labelable, Sortable {
+public final class LabeledPolygon extends SimplePolygon implements Labelable, Sortable, PolygonWritable {
     private TreeMap<String, Vertex2D> vertex;
     private LinkedList<String> keys = new LinkedList<>();
 
@@ -100,7 +112,9 @@ public final class LabeledPolygon extends SimplePolygon implements Labelable, So
      */
     @Override
     public Collection<Vertex2D> getSortedVertices() {
-        return vertex.values();
+        Set<Vertex2D> x = new TreeSet<Vertex2D>();
+        vertex.values().stream().forEach(e -> x.add(e));
+        return x;
     }
 
     /**
@@ -130,11 +144,43 @@ public final class LabeledPolygon extends SimplePolygon implements Labelable, So
         return duplicates;
     }
 
+    @Override
+    public void write(OutputStream os) throws IOException {
+        vertex.entrySet().forEach(e -> {
+            try {
+                os.write((e.getValue().getX() +
+                        " " + e.getValue().getY() + " " + e.getKey() + System.lineSeparator()).getBytes());
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+
+    }
+
+    @Override
+    public void write(File file) throws IOException {
+        write(new FileOutputStream(file));
+    }
+
+    /**
+     * @param os byte output stream
+     */
+    public void writeJson(OutputStream os) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String json = gson.toJson(vertex);
+
+        try {
+            os.write(json.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * @author Jan Gavlík x445794@mail.muni.cz
      */
 
-    public static class Builder implements Buildable<LabeledPolygon> {
+    public static class Builder implements Buildable<LabeledPolygon>, PolygonReadable {
         private static TreeMap<String, Vertex2D> vertex = new TreeMap<>();
 
         public static TreeMap<String, Vertex2D> getVertex() {
@@ -168,6 +214,32 @@ public final class LabeledPolygon extends SimplePolygon implements Labelable, So
             LabeledPolygon x = new LabeledPolygon(vertex);
             vertex.clear();
             return x;
+        }
+
+        @Override
+        public LabeledPolygon.Builder read(InputStream is) throws IOException {
+            TreeMap<String, Vertex2D> vertexx = new TreeMap<>();
+
+            try (BufferedReader rd = new BufferedReader(new InputStreamReader(is))) {
+                rd.lines().forEach(e -> {
+                    String[] xy = e.split("\\s", 3);
+                    vertexx.put(xy[2], new Vertex2D(Double.parseDouble(xy[0]), Double.parseDouble(xy[1])));
+                });
+            } catch (Exception e) {
+                throw new IOException();
+            }
+
+            vertexx.entrySet().stream().forEach(e -> {
+                addVertex(e.getKey(), e.getValue());
+            });
+
+            return this;
+        }
+
+        @Override
+        public PolygonReadable read(File file) throws IOException {
+            return read(new FileInputStream(file));
+
         }
     }
 }

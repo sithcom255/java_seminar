@@ -2,6 +2,7 @@ package cz.muni.fi.pb162.project.geometry;
 
 import java.util.Collection;
 
+
 /**
  * Interface representing basic methods for labeling vertices.
  *
